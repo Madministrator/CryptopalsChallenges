@@ -10,10 +10,20 @@ class ByteManipTest(unittest.TestCase):
         self.assertEqual(hex_to_base64(hex_string), expected_b64)
 
     def test_is_hex(self):
-        hex_str = "0x1234567890abcdefABCDEF"
+        hex_str = "01234567890abcdefABCDEF"
         rnd_str = "Not a hex encoded string"
         self.assertTrue(is_hex(hex_str))
         self.assertFalse(is_hex(rnd_str))
+
+    def test_ascii_to_hex(self):
+        ascii = "ascii string"
+        hex = "617363696920737472696e67"
+        self.assertEqual(hex, ascii_to_hex(ascii))
+
+    def test_ascii_to_hex_preserve_newlines(self):
+        ascii = "Has\nnewlines"
+        round_trip = hex_to_ascii(ascii_to_hex(ascii))
+        self.assertEqual(ascii, round_trip)
 
     def test_fixed_xor(self):
         """The actual test case from Cryptopals challenges."""
@@ -53,6 +63,11 @@ class ByteManipTest(unittest.TestCase):
         cyphertext = "0e3503340d351334142e107f4167423d0a28"
         actual = xor(plaintext, key)
         self.assertEqual(cyphertext, actual)
+
+    def test_count_set_bits(self):
+        self.assertEqual(count_set_bits(10), 2)
+        self.assertEqual(count_set_bits(32), 1)
+        self.assertEqual(count_set_bits(12345), 6)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
-
+import sys
+from Python.src.ByteManip import *
 
 # "etaoinsrhldcumfpgwybvkxjqz ETAOINSRHLDCUMFPGWYBVKXJQZ.?!1234567890" # standard default
 # "etaoin srhldcumfpgwybvkxjqzETAOINSRHLDCUMFPGWYBVKXJQZ0123456789.?!" # higher space & numeral preference
@@ -17,7 +18,7 @@ def score_text(text: str, frequency: str = "etaoinsrhldcumfpgwybvkxjqz ETAOINSRH
     return score
 
 
-def score_text_probability(text: str):
+def score_text_probability(text: str) -> int:
     """Scores a string on its resemblance to english text by comparing letter frequencies
     to the most common letters in the english alphabet based on the wikipedia page on letter
     frequencies (https://en.wikipedia.org/wiki/Letter_frequency). In this function, the higher
@@ -37,3 +38,23 @@ def score_text_probability(text: str):
     # We could also contemplate generating one of these tables programatically by reading in text files.
     return sum([english_frequencies.get(chr(byte), 0) for byte in bytes(text, 'utf-8').lower()])
 
+
+def hamming_distance(str1: str, str2: str) -> int:
+    """Determines the hamming distance between two utf-8 strings. Hamming distance is the number
+    of differing bits between two pieces of information.
+    :parameter str1 The first string
+    :parameter str2 The second string
+    :returns    The Hamming distance between the two strings
+    """
+    bytes1 = bytes(str1, "utf-8")
+    bytes2 = bytes(str2, "utf-8")
+    # determine which string is shorter and measure the difference in length of bytes
+    bytelen = len(bytes1) if len(bytes1) < len(bytes2) else len(bytes2)
+    distance = abs(len(bytes1) - len(bytes2)) * sys.getsizeof(int)  # if they are the same size, distance will be zero
+    # count the number of differing bits
+    for i in range(0, bytelen):
+        # The number of 1 bits in compared is the number of differing bits
+        compared = bytes1[i] ^ bytes2[i]
+        distance += count_set_bits(compared)
+
+    return distance

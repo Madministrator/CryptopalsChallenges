@@ -20,12 +20,19 @@ def hex_to_ascii(s: str) -> str:
     return bytearray.fromhex(s).decode()
 
 
+def ascii_to_hex(s: str) -> str:
+    """A method that converts hex encoded strings to ascii encoded strings.
+    :parameter s    An ascii encoded string
+    :returns The parameter s encoded in hex format
+    """
+    return s.encode().hex()
+
+
 def hex_to_base64(hex_string: str) -> str:
     """A method that takes a hex encoded string as input and returns the input string base64 encoded.
     :parameter hex_string   A string of hex encoded characters.
     :returns A base64 encoded string which contains the same contents as the parameter string"""
     return b64encode(bytes.fromhex(hex_string)).decode()
-
 
 def fixed_xor(str1: str, str2: str) -> str:
     """A method that takes two equal length hex strings and returns their XOR combination.
@@ -60,12 +67,25 @@ def xor(plaintext: str, key: str) -> str:
     # throw an error if the strings are not hex encoded
     if not is_hex(plaintext) or not is_hex(key):
         raise ValueError("Input strings are not hex encoded")
-    bytes1: bytes = bytes.fromhex(plaintext)
-    bytes2: bytes = bytes.fromhex(key)
-    output: bytearray = bytearray(bytes1)
+    text_bytes: bytes = bytes.fromhex(plaintext)
+    key_bytes: bytes = bytes.fromhex(key)
+    output: bytearray = bytearray(text_bytes)
 
     for i in range(0, len(output)):
         # modulus allows uneven key sizes, effectively repeating the key along the plaintext
-        output[i] = bytes1[i] ^ bytes2[i % len(bytes2)]
+        output[i] = text_bytes[i] ^ key_bytes[i % len(key_bytes)]
 
     return output.hex()
+
+
+def count_set_bits(n: int) -> int:
+    """Counts the number of set bits (bits represented by a 1 in binary) in a number
+    using the Brian Kernighan Algorithm.
+    :parameter  n   The number to check the bits on
+    :returns    The number of set bits in n
+    """
+    count = 0
+    while n:
+        n &= n-1
+        count += 1
+    return count

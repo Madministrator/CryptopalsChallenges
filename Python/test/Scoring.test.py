@@ -13,6 +13,12 @@ class ScoringTest(unittest.TestCase):
         score = 0.8825599999999999
         self.assertEqual(score, score_text_probability(sample))
 
+    def test_hamming_distance(self):
+        first = "this is a test"
+        second = "wokka wokka!!!"
+        actual_distance = 37
+        self.assertEqual(hamming_distance(first, second), actual_distance)
+
 
 if __name__ == '__main__':
     unittest.main()
