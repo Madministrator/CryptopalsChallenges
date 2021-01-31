@@ -78,3 +78,50 @@ def brute_xor_file(filename: str, keylen: int, verbose: bool = False) -> (int, s
                 print("Line {}: Best Key: {}, Resulting Plaintext: {}".format(line_number, key, plaintext))
         # return best guess from the entire file
         return best_line_number, best_key, best_plaintext
+
+
+def break_repeating_key_xor(cyphertext: str, maxkeylen: int, verbose: bool = False) -> (str, str):
+    """Given cypher text which has been encrypted with a repeating key XOR cypher,
+    break the cypher and return the key and the plaintext.
+    :parameter cyphertext The cypher text we want to break
+    :parameter maxkeylen The maximum key length to attempt to break before giving up.
+    :parameter verbose Print processing data out to the console, defaults to False.
+    :returns A tuple which contains the key and plaintext, provided the key is smaller than maxkeylen.
+    """
+    # iterate over all possible key sizes and guess which size is likely the key
+    if verbose:
+        print("Scoring Key Sizes to determine likely key size. Lower scores are better.")
+    best_key_size = 0
+    best_key_score = sys.maxsize
+    for key_size in range(2, maxkeylen):
+        # take the first keysize worth of bytes and the second keysize worth of bytes and find their hamming distance
+        first_chunk = cyphertext[0: key_size]
+        second_chunk = cyphertext[key_size: key_size + key_size]
+        distance = hamming_distance(first_chunk, second_chunk) / key_size  # / key_size normalizes key sizes
+        if distance < best_key_score:
+            best_key_score = distance
+            best_key_size = key_size
+        if verbose:
+            print("Key Length: {}, Score: {}".format(key_size, distance))
+    if verbose:
+        print("Likeliest key length: {} with score: {}".format(best_key_size, best_key_score))
+    # we probably know the key size, break the cyphertext into blocks of key size length
+    blocks = [cyphertext[i:i + best_key_size] for i in range(0, len(cyphertext), best_key_size)]
+    # transpose the blocks. Make a block that is the first byte of every block, and a block that is the second byte, etc
+    transposed = [""] * best_key_size
+    for block in blocks:
+        for i in range(0, len(block)):
+            transposed[i] += block[i]
+    # solve each transposed block as if it were a single-character XOR
+    key = ""
+    for block in transposed:
+        key_character, plaintext = brute_xor(ascii_to_hex(block), 1, False)
+        key += key_character
+        if verbose:
+            print("Letter of Key: {}, resulting values: {}".format(key_character, plaintext))
+    # Assuming each single letter break was successful, we probably have the key, attempt decryption
+    if verbose:
+        print("The key is likely to be: {}".format(key))
+    plaintext = hex_to_ascii(xor(ascii_to_hex(cyphertext), ascii_to_hex(key)))
+
+    return key, plaintext

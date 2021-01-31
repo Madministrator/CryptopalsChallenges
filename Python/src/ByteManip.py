@@ -78,6 +78,8 @@ def xor(plaintext: str, key: str) -> str:
     return output.hex()
 
 
+
+
 def count_set_bits(n: int) -> int:
     """Counts the number of set bits (bits represented by a 1 in binary) in a number
     using the Brian Kernighan Algorithm.

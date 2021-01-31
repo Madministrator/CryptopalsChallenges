@@ -17,7 +17,7 @@ def score_text(text: str, frequency: str = "etaoinsrhldcumfpgwybvkxjqz ETAOINSRH
         score += index if index >= 0 else 255  # punish characters not found in the high frequency string.
     return score
 
-
+# This isn't used outside of a test context, but I have it here as an alternative for fun.
 def score_text_probability(text: str) -> int:
     """Scores a string on its resemblance to english text by comparing letter frequencies
     to the most common letters in the english alphabet based on the wikipedia page on letter
@@ -35,7 +35,7 @@ def score_text_probability(text: str) -> int:
     }
     # This could be substituted with other languages pretty easily by using the table from the
     # same Wiki article. The dictionary itself could be expanded to use accented characters too.
-    # We could also contemplate generating one of these tables programatically by reading in text files.
+    # We could also contemplate generating one of these tables programmatically by reading in text files.
     return sum([english_frequencies.get(chr(byte), 0) for byte in bytes(text, 'utf-8').lower()])
 
 
