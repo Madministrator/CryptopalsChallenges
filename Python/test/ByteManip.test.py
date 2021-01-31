@@ -1,5 +1,5 @@
 import unittest
-from Python.src.ByteManip import hex_to_base64, is_hex, fixed_xor, xor
+from Python.src.ByteManip import *
 
 
 class ByteManipTest(unittest.TestCase):
