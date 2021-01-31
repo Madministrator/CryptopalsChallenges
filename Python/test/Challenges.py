@@ -58,6 +58,7 @@ class Challenges(unittest.TestCase):
         with open("../../Payloads/Set1Challenge6.txt") as file:
             cyphertext = b64decode(file.read().replace('\n', '')).decode()
         key, plaintext = break_repeating_key_xor(cyphertext, 40, True)
+        print()
         print(key, plaintext)
 
 
