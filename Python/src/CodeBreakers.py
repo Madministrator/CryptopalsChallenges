@@ -20,7 +20,7 @@ def brute_xor(cyphertext: str, keylen: int, verbose: bool = False) -> (str, str)
 
     for gen_key in combinations_with_replacement(chars, keylen):
         key = "".join(gen_key)
-        plaintext = hex_to_ascii(xor(cyphertext, key.encode().hex()))
+        plaintext = xor(bytes.fromhex(cyphertext), bytes(key, 'ascii')).decode('ascii')
         if verbose:
             print(key, plaintext)
         score = score_text(plaintext)
@@ -128,7 +128,7 @@ def break_repeating_key_xor(cyphertext: str, maxkeylen: int, verbose: bool = Fal
         # Assuming each single letter break was successful, we probably have the key, attempt decryption
         if verbose:
             print("The key could be: {}".format(guessed_key))
-        guessed_plaintext = hex_to_ascii(xor(ascii_to_hex(cyphertext), ascii_to_hex(guessed_key)))
+        guessed_plaintext = xor(bytes(cyphertext, 'ascii'), bytes(guessed_key, 'ascii')).decode()
         guessed_score = score_text(guessed_plaintext)
         guesses.append((guessed_key, guessed_plaintext, guessed_score))
     # we now have a list of the likeliest keys, plain-texts, and scores. Return the best

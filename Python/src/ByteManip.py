@@ -17,7 +17,7 @@ def hex_to_ascii(s: str) -> str:
     :parameter s    A hex encoded string
     :returns The parameter s encoded in ASCII format
     """
-    return bytearray.fromhex(s).decode()
+    return bytes.fromhex(s).decode('ascii')
 
 
 def ascii_to_hex(s: str) -> str:
@@ -33,6 +33,7 @@ def hex_to_base64(hex_string: str) -> str:
     :parameter hex_string   A string of hex encoded characters.
     :returns A base64 encoded string which contains the same contents as the parameter string"""
     return b64encode(bytes.fromhex(hex_string)).decode()
+
 
 def fixed_xor(str1: str, str2: str) -> str:
     """A method that takes two equal length hex strings and returns their XOR combination.
@@ -57,27 +58,17 @@ def fixed_xor(str1: str, str2: str) -> str:
     return output.hex()
 
 
-def xor(plaintext: str, key: str) -> str:
+def xor(message: bytes, key: bytes) -> bytes:
     """A method that takes two hex strings and returns their XOR combination.
     The length of the key relevant to the plaintext does not matter, but the order of the parameters do.
-    :parameter plaintext    A hex encoded string to be encrypted.
-    :parameter key  A hex encoded string to use as the symmetric encryption key.
-    :raises valueError if the inputs are not hex encoded.
-    :returns a hex encoded str which is the XOR combination of the inputs"""
-    # throw an error if the strings are not hex encoded
-    if not is_hex(plaintext) or not is_hex(key):
-        raise ValueError("Input strings are not hex encoded")
-    text_bytes: bytes = bytes.fromhex(plaintext)
-    key_bytes: bytes = bytes.fromhex(key)
-    output: bytearray = bytearray(text_bytes)
-
+    :parameter message  The bytes which make up the message to be encrypted/decrypted.
+    :parameter key      The bytes which make up the symmetric key
+    :returns A set of bytes which is the XOR result of the parameters."""
+    output: bytearray = bytearray(len(message))
     for i in range(0, len(output)):
         # modulus allows uneven key sizes, effectively repeating the key along the plaintext
-        output[i] = text_bytes[i] ^ key_bytes[i % len(key_bytes)]
-
-    return output.hex()
-
-
+        output[i] = message[i] ^ key[i % len(key)]
+    return output
 
 
 def count_set_bits(n: int) -> int:

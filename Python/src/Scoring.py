@@ -46,8 +46,8 @@ def hamming_distance(str1: str, str2: str) -> int:
     :parameter str2 The second string
     :returns    The Hamming distance between the two strings
     """
-    bytes1 = bytes(str1, "utf-8")
-    bytes2 = bytes(str2, "utf-8")
+    bytes1 = bytes(str1, "ascii")
+    bytes2 = bytes(str2, "ascii")
     # determine which string is shorter and measure the difference in length of bytes
     bytelen = len(bytes1) if len(bytes1) < len(bytes2) else len(bytes2)
     distance = abs(len(bytes1) - len(bytes2)) * sys.getsizeof(int)  # if they are the same size, distance will be zero

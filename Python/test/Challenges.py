@@ -50,8 +50,8 @@ class Challenges(unittest.TestCase):
     #     key = "ICE"
     #     cyphertext_line1 = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272"
     #     cyphertext_line2 = "a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
-    #     self.assertEqual(xor(ascii_to_hex(plaintext_line1), ascii_to_hex(key)), cyphertext_line1)
-    #     self.assertEqual(xor(ascii_to_hex(plaintext_line2), ascii_to_hex(key)), cyphertext_line2)
+    #     self.assertEqual(xor(bytes(plaintext_line1, 'ascii'), bytes(key, 'ascii')).hex(), cyphertext_line1)
+    #     self.assertEqual(xor(bytes(plaintext_line2, 'ascii'), bytes(key, 'ascii')).hex(), cyphertext_line2)
 
     def test_set1_challenge6(self):
         # load in the cyphertext file

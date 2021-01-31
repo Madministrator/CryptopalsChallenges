@@ -16,14 +16,14 @@ class ByteManipTest(unittest.TestCase):
         self.assertFalse(is_hex(rnd_str))
 
     def test_ascii_to_hex(self):
-        ascii = "ascii string"
-        hex = "617363696920737472696e67"
-        self.assertEqual(hex, ascii_to_hex(ascii))
+        text = "ascii string"
+        hex_result = "617363696920737472696e67"
+        self.assertEqual(hex_result, ascii_to_hex(text))
 
     def test_ascii_to_hex_preserve_newlines(self):
-        ascii = "Has\nnewlines"
-        round_trip = hex_to_ascii(ascii_to_hex(ascii))
-        self.assertEqual(ascii, round_trip)
+        text = "Has\nnewlines"
+        round_trip = hex_to_ascii(ascii_to_hex(text))
+        self.assertEqual(text, round_trip)
 
     def test_fixed_xor(self):
         """The actual test case from Cryptopals challenges."""
@@ -54,14 +54,28 @@ class ByteManipTest(unittest.TestCase):
         plaintext = "1c0111001f010100061a024b53535009181c"
         key = "686974207468652062756c6c277320657965"
         cyphertext = "746865206b696420646f6e277420706c6179"
-        actual = xor(plaintext, key)
+        actual = xor(bytes.fromhex(plaintext), bytes.fromhex(key)).hex()
         self.assertEqual(cyphertext, actual)
 
     def test_xor_different_length_keys(self):
         plaintext = "1c0111001f010100061a024b53535009181c"
         key = "1234"
         cyphertext = "0e3503340d351334142e107f4167423d0a28"
-        actual = xor(plaintext, key)
+        actual = xor(bytes.fromhex(plaintext), bytes.fromhex(key)).hex()
+        self.assertEqual(cyphertext, actual)
+
+    def test_xor_ascii(self):
+        plaintext = "hello"
+        key = "world"
+        cyphertext = "1f0a1e000b"
+        actual = xor(bytes(plaintext, 'ascii'), bytes(key, 'ascii')).hex()
+        self.assertEqual(cyphertext, actual)
+
+    def test_xor_ascii_different_length_keys(self):
+        plaintext = "Hello World"
+        key = "!"
+        cyphertext = "69444d4d4e01764e534d45"
+        actual = xor(bytes(plaintext, 'ascii'), bytes(key, 'ascii')).hex()
         self.assertEqual(cyphertext, actual)
 
     def test_count_set_bits(self):
