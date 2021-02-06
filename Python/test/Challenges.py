@@ -1,6 +1,7 @@
 import unittest
 from Python.src.CodeBreakers import *
 from base64 import b64decode
+import timeit
 
 
 class Challenges(unittest.TestCase):
@@ -53,18 +54,31 @@ class Challenges(unittest.TestCase):
     #     self.assertEqual(xor(bytes(plaintext_line1, 'ascii'), bytes(key, 'ascii')).hex(), cyphertext_line1)
     #     self.assertEqual(xor(bytes(plaintext_line2, 'ascii'), bytes(key, 'ascii')).hex(), cyphertext_line2)
 
-    def test_set1_challenge6(self):
+    def test_set1_challenge6_brute(self):
+        # load in the cyphertext file
+        expected_key = "Terminator X: Bring the noise"  # Note: key length = 29
+        with open("../../Payloads/Set1Challenge6.txt") as file:
+            cyphertext = b64decode(file.read().replace('\n', '')).decode()
+            expected_plaintext = xor(bytes(cyphertext, "ascii"), bytes(expected_key, "ascii")).decode("ascii")
+        # Timing code will show the difference between brute forcing and intelligent guessing
+        start = timeit.default_timer()
+        key, plaintext = brute_repeating_key_xor(cyphertext, 40, False)
+        elapsed = timeit.default_timer() - start
+        print("Time to brute force repeated key XOR: {}".format(elapsed))
+        self.assertEqual(expected_key, key)
+        self.assertEqual(expected_plaintext, plaintext)
+
+    def test_set1_challenge6_break(self):
         # load in the cyphertext file
         expected_key = "Terminator X: Bring the noise"
         with open("../../Payloads/Set1Challenge6.txt") as file:
             cyphertext = b64decode(file.read().replace('\n', '')).decode()
             expected_plaintext = xor(bytes(cyphertext, "ascii"), bytes(expected_key, "ascii")).decode("ascii")
-        # key, plaintext = break_repeating_key_xor(cyphertext, 40, True)
-        # print()
-        # print(key, plaintext)
-        key, plaintext = brute_repeating_key_xor(cyphertext, 40, True)
-        print(key, plaintext)
-        expected_key = "Terminator X: Bring the noise"
+        # Timing code will show how much faster this method is than brute forcing
+        start = timeit.default_timer()
+        key, plaintext = break_repeating_key_xor(cyphertext, 40, False)
+        elapsed = timeit.default_timer() - start
+        print("Time to break repeated key XOR: {}".format(elapsed))
         self.assertEqual(expected_key, key)
         self.assertEqual(expected_plaintext, plaintext)
 

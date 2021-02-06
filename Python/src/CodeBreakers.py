@@ -134,14 +134,14 @@ def break_repeating_key_xor(cyphertext: str, maxkeylen: int, verbose: bool = Fal
         # take the first keysize worth of bytes and the second keysize worth of bytes and find their hamming distance
         blocks = [cyphertext[i:i + key_len] for i in range(0, len(cyphertext), key_len)]
         distance = 0
-        for i in range(1, len(blocks), 2):
-            distance += hamming_distance(blocks[i], blocks[i - 1]) / key_len  # normalizing along key lengths
+        for i in range(1, len(blocks)):
+            distance += hamming_distance(blocks[0], blocks[i]) / key_len  # normalizing along key lengths
         distance /= len(blocks)  # average of all hamming distances
         scores.append((key_len, distance))
         if verbose:
             print("Key Length: {}, Score: {}".format(key_len, distance))
     scores.sort(key=lambda l: l[1])  # sort the scores from lowest to highest since lower is better
-    scores = scores[:5]  # truncate to only use the best five scores (or less if maxkeylen is < 5
+    scores = scores[-5:]  # truncate to only use the best five scores (or less if maxkeylen is < 5)
     if verbose:
         print()  # add whitespace to output
         print("Top {} likely key lengths and their scores:".format(len(scores)))
@@ -149,6 +149,7 @@ def break_repeating_key_xor(cyphertext: str, maxkeylen: int, verbose: bool = Fal
             print("Key length: {} with score {}".format(key_size, score))
         print()
 
+    # note that the below code is confirmed to work because it is the same as in the brute force function.
     guesses = []
     for key_len, score in scores:
         # we probably know the key size, break the cyphertext into blocks of key_len size

@@ -40,7 +40,7 @@ def score_text_probability(text: str) -> int:
 
 
 def hamming_distance(str1: str, str2: str) -> int:
-    """Determines the hamming distance between two utf-8 strings. Hamming distance is the number
+    """Determines the hamming distance between two ascii strings. Hamming distance is the number
     of differing bits between two pieces of information.
     :parameter str1 The first string
     :parameter str2 The second string
