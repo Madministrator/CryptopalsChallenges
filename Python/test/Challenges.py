@@ -82,6 +82,13 @@ class Challenges(unittest.TestCase):
         self.assertEqual(expected_key, key)
         self.assertEqual(expected_plaintext, plaintext)
 
+    def test_set1_challenge7(self):
+        # Decrypt AES-128-ECB mode
+        key = "YELLOW SUBMARINE"
+        with open("../../Payloads/Set1Challenge7.txt") as file:
+            cyphertext = b64decode(file.read().replace('\n', '')).decode()
+        expected_plaintext_start = "I'm back and I'm ringin' the bell"
+
 
 if __name__ == '__main__':
     unittest.main()
