@@ -55,11 +55,18 @@ class Challenges(unittest.TestCase):
 
     def test_set1_challenge6(self):
         # load in the cyphertext file
+        expected_key = "Terminator X: Bring the noise"
         with open("../../Payloads/Set1Challenge6.txt") as file:
             cyphertext = b64decode(file.read().replace('\n', '')).decode()
-        key, plaintext = break_repeating_key_xor(cyphertext, 40, True)
-        print()
+            expected_plaintext = xor(bytes(cyphertext, "ascii"), bytes(expected_key, "ascii")).decode("ascii")
+        # key, plaintext = break_repeating_key_xor(cyphertext, 40, True)
+        # print()
+        # print(key, plaintext)
+        key, plaintext = brute_repeating_key_xor(cyphertext, 40, True)
         print(key, plaintext)
+        expected_key = "Terminator X: Bring the noise"
+        self.assertEqual(expected_key, key)
+        self.assertEqual(expected_plaintext, plaintext)
 
 
 if __name__ == '__main__':

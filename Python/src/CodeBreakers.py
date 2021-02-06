@@ -79,6 +79,44 @@ def brute_xor_file(filename: str, keylen: int, verbose: bool = False) -> (int, s
         return best_line_number, best_key, best_plaintext
 
 
+def brute_repeating_key_xor(cyphertext: str, maxkeylen: int, verbose: bool = False) -> (str, str):
+    """Because trying to intelligently break XOR was proving troublesome, I am attempting to brute
+    force it to see if that gets consistent results, or least more accurate ones.
+    :parameter cyphertext The cypher text we want to break
+    :parameter maxkeylen The maximum key length to attempt to break before giving up.
+    :parameter verbose Print processing data out to the console, defaults to False.
+    :returns A tuple which contains the key and plaintext, provided the key is smaller than maxkeylen.
+    """
+    guesses = []
+    # iterate over all possible key sizes
+    for key_len in range(2, maxkeylen + 1):
+        # given a guessed key length, break the cyphertext into blocks of key_len size
+        blocks = [cyphertext[i:i + key_len] for i in range(0, len(cyphertext), key_len)]
+        # transpose the blocks
+        transposed = [""] * key_len
+        for block in blocks:
+            for i in range(0, len(block)):
+                transposed[i] += block[i]
+        # solve each transposed block as if it were a single-character XOR
+        guessed_key = ""
+        for block in transposed:
+            key_character, guessed_plaintext = brute_xor(ascii_to_hex(block), 1, False)
+            guessed_key += key_character
+        # Assuming each single letter break was successful, we probably have the key, attempt decryption
+        if verbose:
+            print("The key could be: {}".format(guessed_key))
+        guessed_plaintext = xor(bytes(cyphertext, 'ascii'), bytes(guessed_key, 'ascii')).decode()
+        guessed_score = score_text(guessed_plaintext)
+        guesses.append((guessed_key, guessed_plaintext, guessed_score))
+    # we now have a list of the likeliest keys, plain-texts, and scores. Return the best
+    guesses.sort(key=lambda l: l[2])  # sort by the guessed score from before
+    if verbose:
+        print("Top guesses for keys and plaintext")
+        for key, plaintext, score in guesses:
+            print("Key: {}, Plaintext: {}".format(key, (plaintext[:15] + '...') if len(plaintext) > 15 else plaintext))
+    return guesses[0][0], guesses[0][1]
+
+
 def break_repeating_key_xor(cyphertext: str, maxkeylen: int, verbose: bool = False) -> (str, str):
     """Given cypher text which has been encrypted with a repeating key XOR cypher,
     break the cypher and return the key and the plaintext.
