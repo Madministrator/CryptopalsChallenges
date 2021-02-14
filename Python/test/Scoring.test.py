@@ -14,6 +14,7 @@ class ScoringTest(unittest.TestCase):
         self.assertEqual(score, score_text_probability(sample))
 
     def test_hamming_distance(self):
+        # This test is generated from an actual recommended test from Cryptopals
         first = "this is a test"
         second = "wokka wokka!!!"
         actual_distance = 37

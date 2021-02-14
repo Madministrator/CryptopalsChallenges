@@ -17,6 +17,7 @@ def score_text(text: str, frequency: str = "etaoinsrhldcumfpgwybvkxjqz ETAOINSRH
         score += index if index >= 0 else 255  # punish characters not found in the high frequency string.
     return score
 
+
 # This isn't used outside of a test context, but I have it here as an alternative for fun.
 def score_text_probability(text: str) -> int:
     """Scores a string on its resemblance to english text by comparing letter frequencies

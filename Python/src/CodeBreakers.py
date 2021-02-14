@@ -141,7 +141,7 @@ def break_repeating_key_xor(cyphertext: str, maxkeylen: int, verbose: bool = Fal
         if verbose:
             print("Key Length: {}, Score: {}".format(key_len, distance))
     scores.sort(key=lambda l: l[1])  # sort the scores from lowest to highest since lower is better
-    scores = scores[-5:]  # truncate to only use the best five scores (or less if maxkeylen is < 5)
+    scores = scores[:5] + scores[-5:]  # truncate to only use the five outer scores (or less if maxkeylen is < 5)
     if verbose:
         print()  # add whitespace to output
         print("Top {} likely key lengths and their scores:".format(len(scores)))

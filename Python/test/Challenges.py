@@ -2,6 +2,7 @@ import unittest
 from Python.src.CodeBreakers import *
 from base64 import b64decode
 import timeit
+from Crypto.Cipher import AES
 
 
 class Challenges(unittest.TestCase):
@@ -84,10 +85,14 @@ class Challenges(unittest.TestCase):
 
     def test_set1_challenge7(self):
         # Decrypt AES-128-ECB mode
-        key = "YELLOW SUBMARINE"
         with open("../../Payloads/Set1Challenge7.txt") as file:
-            cyphertext = b64decode(file.read().replace('\n', '')).decode()
+            cyphertext: str = file.read().replace('\n', '')
+            cyphertext = b64decode(cyphertext)
+        # I didn't implement this, I'm just using the pycrypto library to encrypt/decrypt
+        cipher = AES.new("YELLOW SUBMARINE", AES.MODE_ECB)
+        plaintext: str = cipher.decrypt(cyphertext).decode()
         expected_plaintext_start = "I'm back and I'm ringin' the bell"
+        self.assertTrue(plaintext.startswith(expected_plaintext_start))
 
 
 if __name__ == '__main__':
