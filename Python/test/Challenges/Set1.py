@@ -5,7 +5,7 @@ import timeit
 from Crypto.Cipher import AES
 
 
-class Challenges(unittest.TestCase):
+class Set1(unittest.TestCase):
     __doc__ = """All unit tests in this file are methods which assert that I have completed
     a cryptopals challenge. Each method is titled according to how the challenges
     are organized in the website."""
@@ -39,26 +39,23 @@ class Challenges(unittest.TestCase):
         key = '5'
         plaintext = "Now that the party is jumping\n"
         # Note that the filename is relative and thus dependent on project structure
-        ln, k, p = brute_xor_file("../../Payloads/Set1Challenge4.txt", 1, False)
+        ln, k, p = brute_xor_file("../../../Payloads/Set1Challenge4.txt", 1, False)
         self.assertEqual(target_line_number, ln)
         self.assertEqual(key, k)
         self.assertEqual(plaintext, p)
 
-    # def test_set1_challenge5(self):  # FIXME This should work (and works in practice), but I don't see why it fails.
-    #     # Implement repeating-key XOR
-    #     # Note that they want \n to be preserved across XOR cyphers, which isn't typically how that should work.
-    #     plaintext_line1 = "Burning 'em, if you ain't quick and nimble \n"
-    #     plaintext_line2 = "I go crazy when I hear a cymbal"
-    #     key = "ICE"
-    #     cyphertext_line1 = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272"
-    #     cyphertext_line2 = "a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
-    #     self.assertEqual(xor(bytes(plaintext_line1, 'ascii'), bytes(key, 'ascii')).hex(), cyphertext_line1)
-    #     self.assertEqual(xor(bytes(plaintext_line2, 'ascii'), bytes(key, 'ascii')).hex(), cyphertext_line2)
+    def test_set1_challenge5(self):
+        # Implement repeating-key XOR
+        plaintext_line = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
+        key = "ICE"
+        cyphertext_line = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a" \
+                          "652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+        self.assertEqual(cyphertext_line, xor(bytes(plaintext_line, 'utf-8'), bytes(key, 'utf-8')).hex())
 
     def test_set1_challenge6_brute(self):
         # load in the cyphertext file
         expected_key = "Terminator X: Bring the noise"  # Note: key length = 29
-        with open("../../Payloads/Set1Challenge6.txt") as file:
+        with open("../../../Payloads/Set1Challenge6.txt") as file:
             cyphertext = b64decode(file.read().replace('\n', '')).decode()
             expected_plaintext = xor(bytes(cyphertext, "ascii"), bytes(expected_key, "ascii")).decode("ascii")
         # Timing code will show the difference between brute forcing and intelligent guessing
@@ -72,7 +69,7 @@ class Challenges(unittest.TestCase):
     def test_set1_challenge6_break(self):
         # load in the cyphertext file
         expected_key = "Terminator X: Bring the noise"
-        with open("../../Payloads/Set1Challenge6.txt") as file:
+        with open("../../../Payloads/Set1Challenge6.txt") as file:
             cyphertext = b64decode(file.read().replace('\n', '')).decode()
             expected_plaintext = xor(bytes(cyphertext, "ascii"), bytes(expected_key, "ascii")).decode("ascii")
         # Timing code will show how much faster this method is than brute forcing
@@ -85,7 +82,7 @@ class Challenges(unittest.TestCase):
 
     def test_set1_challenge7(self):
         # Decrypt AES-128-ECB mode
-        with open("../../Payloads/Set1Challenge7.txt") as file:
+        with open("../../../Payloads/Set1Challenge7.txt") as file:
             cyphertext: str = file.read().replace('\n', '')
             cyphertext = b64decode(cyphertext)
         # I didn't implement this, I'm just using the pycrypto library to encrypt/decrypt
@@ -96,7 +93,7 @@ class Challenges(unittest.TestCase):
 
     def test_set1_challenge8(self):
         # Detect ECB encryption
-        filename = "../../Payloads/Set1Challenge8.txt"
+        filename = "../../../Payloads/Set1Challenge8.txt"
         expected_line_number = 133
         actual_line_number = find_ecb_line(filename)
         self.assertEqual(expected_line_number, actual_line_number)
