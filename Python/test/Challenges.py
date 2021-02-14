@@ -94,6 +94,13 @@ class Challenges(unittest.TestCase):
         expected_plaintext_start = "I'm back and I'm ringin' the bell"
         self.assertTrue(plaintext.startswith(expected_plaintext_start))
 
+    def test_set1_challenge8(self):
+        # Detect ECB encryption
+        filename = "../../Payloads/Set1Challenge8.txt"
+        expected_line_number = 133
+        actual_line_number = find_ecb_line(filename)
+        self.assertEqual(expected_line_number, actual_line_number)
+
 
 if __name__ == '__main__':
     unittest.main()

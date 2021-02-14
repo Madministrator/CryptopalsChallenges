@@ -20,6 +20,12 @@ class ScoringTest(unittest.TestCase):
         actual_distance = 37
         self.assertEqual(hamming_distance(first, second), actual_distance)
 
+    def test_percent_repeating_blocks(self):
+        # "YELLOW SUBMARINE" is 16 bits, and so is " accomplishment " and " bioluminescense"
+        repeats = "YELLOW SUBMARINE accomplishment YELLOW SUBMARINE bioluminescense"
+        score = percent_repeated_blocks(repeats, 16)
+        self.assertAlmostEqual(score, 0.5)  # floating point comparison cannot be perfectly equal
+
 
 if __name__ == '__main__':
     unittest.main()

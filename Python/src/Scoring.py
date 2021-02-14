@@ -1,5 +1,6 @@
 import sys
 from Python.src.ByteManip import *
+from collections import Counter
 
 # "etaoinsrhldcumfpgwybvkxjqz ETAOINSRHLDCUMFPGWYBVKXJQZ.?!1234567890" # standard default
 # "etaoin srhldcumfpgwybvkxjqzETAOINSRHLDCUMFPGWYBVKXJQZ0123456789.?!" # higher space & numeral preference
@@ -7,8 +8,8 @@ from Python.src.ByteManip import *
 def score_text(text: str, frequency: str = "etaoinsrhldcumfpgwybvkxjqz ETAOINSRHLDCUMFPGWYBVKXJQZ.?!1234567890") -> int:
     """Scores a string on its resemblance to english text by using letter frequency.
     The lower the returned integer, the better the score.
-    :parameter text The ascii string to score
-    :parameter frequency A "letter frequency string" to use as a scoring metric. Defaults to etoin shrdlu based string.
+    :param text The ascii string to score
+    :param frequency A "letter frequency string" to use as a scoring metric. Defaults to etoin shrdlu based string.
     :returns an integer score on the resemblance of the string to English text, where a low score is preferred."""
     score: int = 0
     # actual scoring algorithm
@@ -24,7 +25,7 @@ def score_text_probability(text: str) -> int:
     to the most common letters in the english alphabet based on the wikipedia page on letter
     frequencies (https://en.wikipedia.org/wiki/Letter_frequency). In this function, the higher
     the score, the better.
-    :parameter text The utf-8 string to score
+    :param text The utf-8 string to score
     :returns an integer score on the resemblance of the string to English text, where a higher score is preferred."""
     english_frequencies = {
         'a': .08167, 'b': .01492, 'c': .02782, 'd': .04253, 'e': .12702,
@@ -43,8 +44,8 @@ def score_text_probability(text: str) -> int:
 def hamming_distance(str1: str, str2: str) -> int:
     """Determines the hamming distance between two ascii strings. Hamming distance is the number
     of differing bits between two pieces of information.
-    :parameter str1 The first string
-    :parameter str2 The second string
+    :param str1 The first string
+    :param str2 The second string
     :returns    The Hamming distance between the two strings
     """
     bytes1 = bytes(str1, "ascii")
@@ -59,3 +60,20 @@ def hamming_distance(str1: str, str2: str) -> int:
         distance += count_set_bits(compared)
 
     return distance
+
+
+def percent_repeated_blocks(text: str, block_length: int = 16) -> float:
+    """
+    Checks how many repeating blocks there are in the text, which is a indication/vulnerability of ECB encryption.
+    :param text   The text in question we are checking for encryption.
+    :param block_length The length of each block to compare for repeats, defaults to 16-bit blocks.
+    :return:    A float which is the percent of blocks which repeat, a indication of ECB encryption.
+    """
+    # break the string down into block_length sized blocks
+    blocks = [text[i:i + block_length] for i in range(0, len(text), block_length)]
+    counts = list(Counter(blocks).values())
+    repeats = 0
+    for i in range(0, len(counts)):
+        if counts[i] > 1:
+            repeats += counts[i]
+    return repeats / len(blocks)
