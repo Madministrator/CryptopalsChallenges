@@ -1,5 +1,6 @@
 import unittest
 from Python.src.ByteManip import *
+from Python.src.Oracles import *
 from Crypto.Cipher import AES
 from base64 import b64decode
 
@@ -23,6 +24,13 @@ class Set2(unittest.TestCase):
         plaintext: str = cipher.decrypt(cyphertext).decode()
         expected_plaintext_start = "I'm back and I'm ringin' the bell"
         self.assertTrue(plaintext.startswith(expected_plaintext_start))
+
+    def test_set2_challenge11(self):
+        # ECB/CBC detection oracle
+        # generate some random gibberish and encrypt it
+        cyphertext, mode = rand_encrypt(gibberish(2048))
+        self.assertEqual(mode, detection_oracle(cyphertext))
+
 
 if __name__ == '__main__':
     unittest.main()

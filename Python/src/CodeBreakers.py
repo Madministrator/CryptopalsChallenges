@@ -3,6 +3,7 @@
 from itertools import combinations_with_replacement
 from Python.src.Scoring import *
 import sys
+import string
 
 
 def brute_xor(cyphertext: str, keylen: int, verbose: bool = False) -> (str, str):
@@ -13,12 +14,11 @@ def brute_xor(cyphertext: str, keylen: int, verbose: bool = False) -> (str, str)
     :param verbose      Print all keys of keylen length and their corresponding decryption. Default to False.
     :returns a tuple containing the best guess key and the corresponding decryption"""
     # chars is a string of every printable character from 32 to 127 on the ASCII table
-    chars = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
     best_score: int = sys.maxsize  # maximum size of an integer
     best_key: str = ""
     best_plaintext: str = ""
 
-    for gen_key in combinations_with_replacement(chars, keylen):
+    for gen_key in combinations_with_replacement(string.printable, keylen):
         key = "".join(gen_key)
         plaintext = xor(bytes.fromhex(cyphertext), bytes(key, 'ascii')).decode('ascii')
         if verbose:
